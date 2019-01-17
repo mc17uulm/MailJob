@@ -26,11 +26,10 @@ class App
             echo "- Found " . (count($data)-1) . " data sets in .csv file\r\n";
 
             $header = explode(";", array_shift($data));
-            array_pop($header);
             $body = array();
             foreach($data as $line)
             {
-                $parts = explode(";", substr($line, 0, strlen($line)-1));
+                $parts = explode(";", $line);
                 $tmp = array();
                 for($i = 0; $i < count($parts); $i++)
                 {
@@ -39,10 +38,6 @@ class App
                 array_push($body, $tmp);
             }
 
-            $text = file_get_contents(__DIR__ . "/../Message.html");
-
-            echo "- Loaded message from Message.html\r\n";
-
             $mailer = new Mail($subject, $files);
 
             echo "\r\nStart sending mails...\r\n";
@@ -50,7 +45,7 @@ class App
             $failures = 0;
             foreach($body as $recv)
             {
-                echo "Sending mail no. $i to " . $recv["email"] . "\r\n";
+                echo "Sending mail no. $i to " . $recv["email"] . " : " . $recv["ansprache"] . "\r\n";
                 $i++;
                 ob_start();
                 include ('Layout.php');
@@ -65,6 +60,7 @@ class App
             echo "\r\n";
             echo $failures === 0 ? "\r\nSUCCESS: " . count($body) . " Jobs finished" : "\r\nFAILURE: $failures/" . count($body) . " jobs failed";
             die("\r\n\r\nProgram executed!");
+
 
         }
 
