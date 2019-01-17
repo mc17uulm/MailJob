@@ -1,0 +1,7 @@
+.idea/
+vendor/
+app/ConfigFile.php
+app/Layout.php
+composer.lock
+data.csv
+*.html
