@@ -8,23 +8,37 @@
 
 require_once 'vendor/autoload.php';
 
-$subject = -1;
+echo "-----------\r\nMailJob 0.1\r\n-----------\r\n\r\n";
+
+use app\App;
+
+$subject = null;
+$data = null;
 $files = array();
 
 for($j = 1; $j < count($argv); $j++)
 {
     switch($argv[$j])
     {
-        case "subject":
+        case "--help":
+            App::print_help();
+            die();
+        case "--data":
+            $data = $argv[$j+1];
+            $j++;
+            break;
+
+        case "--subject":
             $subject = $argv[$j+1];
             $j++;
             break;
 
-        case "files":
+        case "--attachment":
             for($k = $j+1; $k < count($argv); $k++)
             {
-                if($argv[$k] === "subject")
+                if(substr($argv[$k], 0, 2) === "--")
                 {
+                    $j = $k-1;
                     break;
                 }
                 else
@@ -39,9 +53,14 @@ for($j = 1; $j < count($argv); $j++)
     }
 }
 
-if(($subject === -1))
+if(is_null($subject))
 {
-    die("Invalid parameters");
+    App::print_help("ERROR: --subject missing");
 }
 
-\app\App::run($subject, $files);
+if(is_null($data))
+{
+    App::print_help("ERROR: --data missing");
+}
+
+App::run($subject, $data, $files);
